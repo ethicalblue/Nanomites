@@ -2,7 +2,7 @@
 ; Nanomites anti-dump technique example           ;
 ; (general idea, primitive educational prototype) ;
 ;-------------------------------------------------+
-; Code: Dawid Farbaniec                           ;
+; Code: Dawid Farbaniec // ethical.blue Magazine  ;
 ;-------------------------------------------------+
 
 extrn ExitProcess : proc
@@ -45,7 +45,7 @@ nano NanomiteStruct <0, 0, 0, 0>
 
 .code
 
-;this procedure is called by int 3h
+;this procedure is called by INT 3h
 myExceptionHandler proc
 
 cmp nano.JumpType, jumpTypeJZ
@@ -82,39 +82,37 @@ jmp nano.NextInstructionAddress
 myExceptionHandler endp
 
 Main proc
+    sub rsp, 28h
 
-sub rsp, 28h
-mov rcx, myExceptionHandler
-call SetUnhandledExceptionFilter
-add rsp, 28h
+    mov rcx, myExceptionHandler
+    call SetUnhandledExceptionFilter
+    add rsp, 28h
 
-mov rax, 07h
-cmp rax, 02h
+    mov rax, 07h
+    cmp rax, 02h
 
-nanomite_here jumpTypeJNZ, _executed
+    nanomite_here jumpTypeJNZ, _executed
 
-jmp _notexecuted
+    jmp _notexecuted
 
-_executed:
-lea rdx, szTextYes
-jmp _msgbox
+    _executed:
+    lea rdx, szTextYes
+    jmp _msgbox
 
-_notexecuted:
-lea rdx, szTextNo
+    _notexecuted:
+    lea rdx, szTextNo
 
-_msgbox:
-sub rsp, 28h
-xor r9, r9
-lea r8, szCaption
-;RDX ustawiony wcześniej
-xor rcx, rcx
-call MessageBoxA
-add rsp, 28h
+    _msgbox:
+    sub rsp, 28h
+    xor r9, r9
+    lea r8, szCaption
+    ;RDX ustawiony wcześniej
+    xor rcx, rcx
+    call MessageBoxA
 
-_exit:
-sub rsp, 28h
-xor rcx, rcx
-call ExitProcess
+    _exit:
+    xor rcx, rcx
+    call ExitProcess
 Main endp
 
 end
